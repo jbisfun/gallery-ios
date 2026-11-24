@@ -1,0 +1,61 @@
+# Fossify Gallery for iOS. Build with `idl build -c release` (see README.md).
+toolchain:
+  sdk_bundle: ~/.swiftpm/swift-sdks/darwin.artifactbundle
+  swiftly_bin: ~/.local/share/swiftly/bin
+  swiftc: swiftc
+  ldid: ldid
+  actool: idl-actool
+
+targets:
+  - name: FossifyGallery
+    bundle_id: org.fossify.gallery.ios
+    version: "1.14.3"
+    build_number: "1"
+    min_ios: "17.0"
+    device_family: "1,2"
+    link: [GalleryKit, FossifyCommons]
+    sources: [App]
+    resources: [Resources/Assets.xcassets]
+    frameworks: [SwiftUI, UIKit, Foundation, Photos, PhotosUI, AVKit, AVFoundation, CoreImage, PencilKit, LocalAuthentication]
+    swift_version: "5.0"
+    info:
+      CFBundleDisplayName: Gallery
+      NSPhotoLibraryUsageDescription: Gallery needs access to your photos and videos to show, organize and edit them.
+      NSPhotoLibraryAddUsageDescription: Gallery saves edited, resized and captured photos to your library.
+      NSCameraUsageDescription: Take photos and videos from the Open camera button.
+      NSMicrophoneUsageDescription: Record sound with videos taken from the Open camera button.
+      NSFaceIDUsageDescription: Unlock password protected folders, hidden items and the app.
+      PHPhotoLibraryPreventAutomaticLimitedAccessAlert: true
+      UIApplicationSceneManifest:
+        UIApplicationSupportsMultipleScenes: false
+      UISupportedInterfaceOrientations:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationLandscapeLeft
+        - UIInterfaceOrientationLandscapeRight
+      UISupportedInterfaceOrientations~ipad:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationPortraitUpsideDown
+        - UIInterfaceOrientationLandscapeLeft
+        - UIInterfaceOrientationLandscapeRight
+    configurations:
+      debug:
+        entitlements:
+          get-task-allow: true
+
+  # Everything but the app entry point; also linked by the launcher (fossify-ios/launcher-ios).
+  - name: GalleryKit
+    type: static
+    min_ios: "17.0"
+    link: [FossifyCommons]
+    sources: [Sources]
+    frameworks: [SwiftUI, UIKit, Foundation, Photos, PhotosUI, AVKit, AVFoundation, CoreImage, PencilKit, LocalAuthentication]
+    swift_version: "5.0"
+
+  # Shared core (fossify-ios/commons-ios), compiled into the app as a static Swift module.
+  - name: FossifyCommons
+    type: static
+    dir: ../commons-ios
+    min_ios: "17.0"
+    sources: [Sources]
+    frameworks: [SwiftUI, UIKit, Foundation]
+    swift_version: "5.0"
